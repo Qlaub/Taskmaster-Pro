@@ -33,7 +33,6 @@ var loadTasks = function() {
 
   // loop over object properties
   $.each(tasks, function(list, arr) {
-    console.log(list, arr);
     // then loop over sub-array
     arr.forEach(function(task) {
       createTask(task.text, task.date, list);
@@ -45,7 +44,47 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+//task item text becomes editable when clicked
+$('.list-group').on('click', 'p', function() {
+  const text = $(this)
+    .text()
+    .trim();
+  const textInput = $('<textarea>')
+    .addClass('form-control')
+    .val(text);
+  $(this).replaceWith(textInput);
+  textInput.trigger('focus');
+})
 
+//when edited text is clicked out of, text is saved to task item
+$('.list-group').on('blur', 'textarea', function() {
+  console.log(this)
+  const text =  $(this)
+    .val()
+    .trim();
+
+  //parent ul's id attribute
+  const status = $(this)
+    .closest('.list-group')
+    .attr('id')
+    .replace('list-', '');
+
+  console.log(status)
+
+  //task position in relation to other li elements
+  const index = $(this)
+    .closest('.list-group-item')
+    .index();
+
+  tasks[status][index].text = text;
+  saveTasks();
+
+  const taskP = $('<p>')
+    .addClass('m-1')
+    .text(text)
+  
+  $(this).replaceWith(taskP);
+})
 
 
 // modal was triggered
