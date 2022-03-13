@@ -76,9 +76,11 @@ $('.list-group').on('blur', 'textarea', function() {
     .closest('.list-group-item')
     .index();
 
+  //update task to our array of objects
   tasks[status][index].text = text;
   saveTasks();
 
+  //update task text
   const taskP = $('<p>')
     .addClass('m-1')
     .text(text)
@@ -86,6 +88,54 @@ $('.list-group').on('blur', 'textarea', function() {
   $(this).replaceWith(taskP);
 })
 
+//due date clicked
+$('.list-group').on('click', 'span', function() {
+  //current text
+  const date = $(this)
+    .text()
+    .trim();
+  
+  //create new input element on date
+  const dateInput = $('<input>')
+    .attr('type', 'text')
+    .addClass('form-control')
+    .val(date);
+  
+  //swap to input field
+  $(this).replaceWith(dateInput);
+
+  //focus on input field
+  dateInput.trigger('focus');
+})
+
+$('.list-group').on('blur', 'input', function() {
+  //user text
+  const date = $(this)
+    .val()
+    .trim();
+
+  //get parent element id
+  const status = $(this)
+    .closest('.list-group')
+    .attr('id')
+    .replace('list-', '');
+  
+
+  //get task position
+  const index = $(this)
+    .closest('.list-group-item')
+    .index();
+
+  //update task in our array of objects
+  tasks[status][index].date = date;
+  saveTasks();
+
+  //turn back into span from input
+  const taskSpan = $('<span>')
+    .addClass('badge badge-primary bade-pill')
+    .text(date);
+  $(this).replaceWith(taskSpan);
+})
 
 // modal was triggered
 $("#task-form-modal").on("show.bs.modal", function() {
