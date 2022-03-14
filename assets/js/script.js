@@ -13,6 +13,8 @@ var createTask = function(taskText, taskDate, taskList) {
   // append span and p element to parent li
   taskLi.append(taskSpan, taskP);
 
+  //check due date
+  auditTask(taskLi);
 
   // append to ul list on the page
   $("#list-" + taskList).append(taskLi);
@@ -55,6 +57,27 @@ $('.list-group').on('click', 'p', function() {
   $(this).replaceWith(textInput);
   textInput.trigger('focus');
 })
+
+const auditTask = function(taskEl) {
+  //retrieve date chosen
+  const date = $(taskEl)
+    .find('span')
+    .text()
+    .trim();
+
+  //convert to moment object
+  const time = moment(date, 'L').set('hour', 17);
+
+  //remove old classes
+  $(taskEl).removeClass('list-group-item-warning list-group-item-danger');
+
+  //check if date has passed
+  if (moment().isAfter(time)) {
+    $(taskEl).addClass('list-group-item-danger');
+  } else if (Math.abs(moment().diff(time, 'days')) <= 2) {
+    $(taskEl.addClass('list-group-item-warning'));
+  }
+}
 
 //when edited text is clicked out of, text is saved to task item
 $('.list-group').on('blur', 'textarea', function() {
@@ -142,6 +165,8 @@ $('.list-group').on('change', 'input[type="text"]', function() {
     .addClass('badge badge-primary bade-pill')
     .text(date);
   $(this).replaceWith(taskSpan);
+
+  auditTask($(taskSpan).closest('.list-group-item'))
 })
 
 // modal was triggered
