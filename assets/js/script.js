@@ -104,11 +104,18 @@ $('.list-group').on('click', 'span', function() {
   //swap to input field
   $(this).replaceWith(dateInput);
 
+  dateInput.datepicker({
+    minDate: 1,
+    onClose: function() {
+      $(this).trigger('change');
+    }
+  });
+
   //focus on input field
   dateInput.trigger('focus');
 })
 
-$('.list-group').on('blur', 'input', function() {
+$('.list-group').on('change', 'input[type="text"]', function() {
   //user text
   const date = $(this)
     .val()
@@ -239,6 +246,10 @@ $('#trash').droppable({
     //christ
   }
 })
+
+$('#modalDueDate').datepicker({
+  minDate: 1
+});
 
 
 
